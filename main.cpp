@@ -5,8 +5,10 @@
 #include <map>
 
 //functions that will read in operands after the opCode
-std::string get1Operand();
-std::string get2Operands();
+void get1Operand( std::ifstream& in, std::ofstream& out);
+void get2Operands( std::ifstream& in, std::ofstream& out);
+std::string dec_to_binary(int dec);
+
 
 int main()
 {
@@ -37,19 +39,59 @@ int main()
     while(!filein.eof())
     {
         counter++;
-        std::getline(filein, line);
-        opcode= line.substr(0, line.find(' '));
+
+        filein>>opcode;
+
         if(!opCode.count(opcode))
         {
             std::cout<<"Error. No such instruction at line "<<counter;
             exit(2);
         }
-        fileout<< opCode.at(opcode)<<std::endl;
 
+        fileout<< opCode.at(opcode);
+        if( opcode =="disp" || opcode == "input" )
+            get1Operand(filein, fileout);
+        else
+            get1Operand( filein, fileout);
     }
-
-
 }
+
+void get1Operand(std:: ifstream& in, std:: ofstream& out)
+{
+    std::string line;
+    in>>line;
+    std::cout<<line<<std::endl;
+    if(isdigit(line[0]))
+    {
+        out<<" " <<dec_to_binary(stoi(line))<<std::endl;
+    }
+}
+
+void get2Operands( std::string, std::ofstream& out)
+{
+    std::cout<<"shouldn't be here";
+}
+
+std::string dec_to_binary(int dec)
+{
+    std::string bin = "";
+
+    if(dec == 0)
+        return "0000000";
+
+    while(dec / 2 != 0)
+    {
+        bin = std::to_string(dec % 2) + bin;
+        dec /= 2;
+    }
+    bin = "1" + bin;
+
+    while(bin.size() < 6)
+        bin = "0" + bin;
+
+    return bin;
+}
+
 
 
 
