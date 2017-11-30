@@ -6,29 +6,36 @@
 
 //functions that will read in operands after the opCode
 void get1Operand( std::ifstream& in, std::ofstream& out);
+void get1OperandAddress(std:: ifstream& in, std:: ofstream& out);
 void get2Operands( std::ifstream& in, std::ofstream& out);
+void setVar( std::string label, std::ifstream& in, std::ofstream& out);
+void get3Operands( std::ifstream& in, std::ofstream& out);
 std::string dec_to_binary(int dec);
 
+//All our operations in a handy reference map, just call the op name to receive the code
+std::map<std::string, std::string> opCode = {{"disp","0000"},{"input","0001"},
+                                             {"move", "0010"}, {"add","0011"}, {"subt", "0100"}, {"mult", "0101"}, {"div", "0110"},
+                                             {"mod", "0111"},{"jump","1000"},{"cond","1001"}, {"put", "1010"}, {"var","1011"}};
+
+std::map <std:: string, std:: string> regCode = {{"c0","0000"},{"c1","0001"},{"c2","0010"},
+                                                 {"c3","0011"},{"c4","0100"},{"c5","0101"},{"c6","0111"},{"c7","1010"}};
+int varCount=0;
 
 int main()
 {
-    //All our operations in a handy reference map, just call the op name to receive the code
-    const std::map<std::string, std::string> opCode = {{"disp","0000"},{"input","0001"},
-    {"move", "0010"}, {"add","0011"}, {"subt", "0100"}, {"mult", "0101"}, {"div", "0110"},
-    {"mod", "0111"},{"jump","1000"},{"cond","1001"}};
 
-    //File in our ISA to be read from - ".chicken" sounds like a nice file name
+     //File in our ISA to be read from - ".chicken" sounds like a nice file name
     std::ifstream filein("myFile.chicken");
 
     //File to hold our binary data - this can be changed to follow the .o convention
     std::ofstream fileout("myFile.chkn");
-
 
     if(filein.fail())
     {
         std::cout<<"Error. Could not open file. Exiting...";
         exit(1);
     }
+
 
     //Variables needed to process thing
     std::string line, opcode, operand;
@@ -49,12 +56,21 @@ int main()
         }
 
         fileout<< opCode.at(opcode);
-        if( opcode =="disp" || opcode == "input" )
-            get1Operand(filein, fileout);
+        if( opcode == "var")
+        {
+            filein>>opcode;
+            setVar(opcode, filein, fileout);
+        }
+        else if( opcode =="disp" || opcode == "input" || opcode == "jump")
+            get1OperandAddress(filein, fileout);
+        else if(opcode == "move"|| opcode == "cond")
+            get2Operands( filein, fileout);
         else
-            get1Operand( filein, fileout);
+            get3Operands(filein, fileout);
+
     }
 }
+
 
 void get1Operand(std:: ifstream& in, std:: ofstream& out)
 {
@@ -65,13 +81,97 @@ void get1Operand(std:: ifstream& in, std:: ofstream& out)
     {
         out<<" " <<dec_to_binary(stoi(line))<<std::endl;
     }
+    out<<std::endl;
 }
 
-void get2Operands( std::string, std::ofstream& out)
+void setVar( std::string label, std::ifstream& in, std::ofstream& out)
 {
-    std::cout<<"shouldn't be here";
+    regCode[label]=dec_to_binary(8+varCount);
+    varCount++;
+    out<< regCode[label];
+    std::string line;
+    in>>line;
+    out<< dec_to_binary(std::stoi( line ));
+
+    out<<std::endl;
+
+
 }
 
+void get1OperandAddress(std:: ifstream& in, std:: ofstream& out)
+{
+    std::string line;
+    in>>line;
+    if(regCode.count(line))
+    {
+        out<<regCode[line];
+    }
+    else {
+        std::cout<<"ERROR!";
+        exit(1);
+    }
+    out<<std::endl;
+
+}
+
+void get2Operands( std::ifstream& in, std::ofstream& out)
+{
+    std::string line;
+    in>>line;
+    if(regCode.count(line))
+    {
+        out<<regCode[line];
+    }
+    else {
+        std::cout<<"ERROR!";
+        exit(1);
+    }
+    in>>line;
+    if(regCode.count(line))
+    {
+        out<<regCode[line];
+    }
+    else {
+        std::cout<<"ERROR!";
+        exit(1);
+    }
+    out<<std::endl;
+    out<<std::endl;
+
+}
+
+void get3Operands( std::ifstream& in, std::ofstream& out)
+{
+    std::string line;
+    in>>line;
+    if(regCode.count(line))
+    {
+        out<<regCode[line];
+    }
+    else {
+        std::cout<<"ERROR!";
+        exit(1);
+    }
+    in>>line;
+    if(regCode.count(line))
+    {
+        out<<regCode[line];
+    }
+    else {
+        std::cout<<"ERROR!";
+        exit(1);
+    }
+    in>>line;
+    if(regCode.count(line))
+    {
+        out<<regCode[line];
+    }
+    else {
+        std::cout<<"ERROR!";
+        exit(1);
+    }
+    out<<std::endl;
+}
 std::string dec_to_binary(int dec)
 {
     std::string bin = "";
@@ -86,7 +186,7 @@ std::string dec_to_binary(int dec)
     }
     bin = "1" + bin;
 
-    while(bin.size() < 6)
+    while(bin.size() < 4)
         bin = "0" + bin;
 
     return bin;
