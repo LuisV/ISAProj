@@ -7,6 +7,8 @@
 using namespace std;
 
 int bin_to_dec(string bin);
+ifstream& GotoLine(ifstream& file, unsigned int num);
+
 int main() {
     ifstream file;
     string inst;
@@ -88,6 +90,9 @@ int main() {
         }
         else if (opcode == "1000")//jump
         {
+            string num = inst.substr(7,15);
+            file.clear();
+            GotoLine(file, bin_to_dec(num));
         }
         else if (opcode == "1001")//cond
         {
@@ -109,4 +114,12 @@ int bin_to_dec(string bin)
         if (bin[i] == '1')
             num += pow(2, bin.length() - 1 - i);
     return num;
+}
+
+ifstream& GotoLine(ifstream& file, unsigned int num){
+    file.seekg(0, file.beg);
+    for(int i=0; i < num - 1; ++i){
+        file.ignore();
+    }
+    return file;
 }
