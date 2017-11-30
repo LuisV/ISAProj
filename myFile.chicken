@@ -1,3 +1,4 @@
-move 5
-add 2
-cond 10
+var chicken 5
+var nugget 4
+mult c0 chicken nugget
+disp c0
