@@ -1,9 +1,15 @@
+//
+// Created by Luis on 11/30/2017.
+//
+
 #include<iostream>
 #include <unordered_map>
 #include<fstream>
 #include <cstdlib>
 #include <cmath>
 #include <string>
+#include <limits>
+
 using namespace std;
 
 int bin_to_dec(string bin);
@@ -26,40 +32,46 @@ int main() {
     commands["0111"] = 0;
     commands["1010"] = 0;
 
-    while (!file.eof()) {
-        string opcode = inst.substr(0, 3);
+    while (true) {
+
+        file>>inst;
+        if(file.eof())
+            break;
+       // cout<<inst<<endl;
+
+        string opcode = inst.substr(0, 4);
         op = stoi(opcode);
 
         if(opcode == "0000")//display -- ME
         {
-            string reg = inst.substr(4,7);
+            string reg = inst.substr(4,4);
             cout << commands[reg] << endl;
         }
         else if (opcode =="0001")//input -- ME
         {
             int in =0;
             cin >> in;
-            commands[inst.substr(4,7)] = in;
+            commands[inst.substr(4,4)] = in;
         }
         else if (opcode == "0010")//move
         {
-            string num1 = inst.substr(4,7);
-            string num2 = inst.substr(8,11);
+            string num1 = inst.substr(4,4);
+            string num2 = inst.substr(8,4);
             commands[num2]=commands[num1];
         }
         else if(opcode == "0011") // add
         {
-            string regs = inst.substr(4,7);
-            string first = inst.substr(8,11);
-            string second = inst.substr(12,15);
+            string regs = inst.substr(4,4);
+            string first = inst.substr(8,4);
+            string second = inst.substr(12,4);
             commands[regs] = commands[first] + commands[second];
 
         }
         else if (opcode =="0100")//subtract -- ME
         {
-            string reg = inst.substr(4,7);
-            string num1 = inst.substr(8,11);
-            string num2 = inst.substr(12,15);
+            string reg = inst.substr(4,4);
+            string num1 = inst.substr(8,4);
+            string num2 = inst.substr(12,4);
 
             int sub = commands[num1] - commands [num2];
             commands[reg] = sub;
@@ -68,43 +80,56 @@ int main() {
         }
         else if (opcode =="0101")//multiply
         {
-            string regs = inst.substr(4,7);
-            string first = inst.substr(8,11);
-            string second = inst.substr(12,15);
+            string regs = inst.substr(4,4);
+            string first = inst.substr(8,4);
+            string second = inst.substr(12,4);
             commands[regs] = commands[first] * commands[second];
 
         }
         else if (opcode == "0110")//divide
         {
-            string regs = inst.substr(4,7);
-            string first = inst.substr(8,11);
-            string second = inst.substr(12,15);
+            string regs = inst.substr(4,4);
+            string first = inst.substr(8,4);
+            string second = inst.substr(12,4);
             commands[regs] = commands[first] / commands[second];
         }
         else if (opcode == "0111") //module
         {
-            string reg = inst.substr(4,7);
-            string num1 = inst.substr(8,11);
-            string num2 = inst.substr(12,15);
+            string reg = inst.substr(4,4);
+            string num1 = inst.substr(8,4);
+            string num2 = inst.substr(12,4);
             commands[reg] = commands[num1]%commands[num2];
         }
         else if (opcode == "1000")//jump
         {
-            string num = inst.substr(7,15);
-            file.clear();
-            GotoLine(file, bin_to_dec(num));
+            if(commands["bool"]== 1) {
+                string num = inst.substr(4);
+                file.clear();
+                GotoLine(file, commands[num]);
+            }
         }
         else if (opcode == "1001")//cond
         {
+            string num1 = inst.substr(4,4);
+            string num2 = inst.substr(8,4);
+            commands["bool"]= commands[num1] != commands[num2];
         }
         else if (opcode == "1010")//put
         {
-            string reg = inst.substr(4, 7);
-            string num = inst.substr(8, 13);
-
+            string reg = inst.substr (4, 4);
+            string num = inst.substr (8);
             int val = bin_to_dec(num);
             commands[reg] = val;
         }
+        else if (opcode == "1011")//var
+        {
+            commands[inst.substr(4,4)]= bin_to_dec( inst.substr(8) );
+        }
+        //inst="";
+       // for ( auto it = commands.begin(); it != commands.end(); ++it )
+         //   std::cout << " " << it->first << ":" << it->second <<endl;
+
+        //cout<<endl;
     }
 }
 int bin_to_dec(string bin)
@@ -119,7 +144,7 @@ int bin_to_dec(string bin)
 ifstream& GotoLine(ifstream& file, unsigned int num){
     file.seekg(0, file.beg);
     for(int i=0; i < num - 1; ++i){
-        file.ignore();
+        file.ignore(numeric_limits<std::streamsize>::max(),'\n');
     }
     return file;
 }

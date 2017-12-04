@@ -10,6 +10,7 @@ void get1OperandAddress(std:: ifstream& in, std:: ofstream& out);
 void get2Operands( std::ifstream& in, std::ofstream& out);
 void setVar( std::string label, std::ifstream& in, std::ofstream& out);
 void get3Operands( std::ifstream& in, std::ofstream& out);
+
 std::string dec_to_binary(int dec);
 
 //All our operations in a handy reference map, just call the op name to receive the code
@@ -21,7 +22,7 @@ std::map <std:: string, std:: string> regCode = {{"c0","0000"},{"c1","0001"},{"c
                                                  {"c3","0011"},{"c4","0100"},{"c5","0101"},{"c6","0111"},{"c7","1010"}};
 int varCount=0;
 
-int main()
+int a()
 {
 
      //File in our ISA to be read from - ".chicken" sounds like a nice file name
@@ -136,7 +137,7 @@ void get2Operands( std::ifstream& in, std::ofstream& out)
         exit(1);
     }
     out<<std::endl;
-    out<<std::endl;
+
 
 }
 
