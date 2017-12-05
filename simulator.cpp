@@ -157,22 +157,14 @@ int main() {
                     commands["bool"]= 1;
                 }
             }
-            if(commands["bool"]= 1){
+            if(commands["bool"] == 1){
 
                 file>>inst;
                 if(file.eof())
                     break;
+        }
+        }
 
-        }
-        }
-        else if (opcode == "1010")//put
-        {
-            string reg = inst.substr(4, 3);
-            string num = inst.substr(8, 5);
-
-            int val = bin_to_dec(num);
-            commands[reg] = val;
-        }
         else if (opcode == "1010")//put
         {
             string reg = inst.substr (4, 4);
