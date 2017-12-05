@@ -2,6 +2,10 @@
 // Created by Luis on 11/30/2017.
 //
 
+//
+// Created by Luis on 11/30/2017.
+//
+
 #include<iostream>
 #include <unordered_map>
 #include<fstream>
@@ -110,9 +114,64 @@ int main() {
         }
         else if (opcode == "1001")//cond
         {
-            string num1 = inst.substr(4,4);
-            string num2 = inst.substr(8,4);
-            commands["bool"]= commands[num1] != commands[num2];
+            string n1 = inst.substr(4,4);
+            string n2 = inst.substr(8,4);
+            //commands["bool"]= commands[n1] != commands[n2];
+
+            //four entries: opcode condition num1 num2
+            //conditions: 1-> if num1 is > num2
+            //conditions: 3-> if num1 = num2
+            //conditions: 2-> if num1 < num2
+            //conditions: 4-> if num1 == 0 (one parameter)
+
+            string condition = inst.substr(4,3);
+            int num1= stoi(n1);
+            int num2=stoi(n2);
+            commands["bool"]= 0;
+
+            if(bin_to_dec(condition) == 1)
+            {
+                if (num1 > num2)
+                {
+                    commands["bool"]= 1;
+                }
+
+            }
+            else if(bin_to_dec(condition) == 2){
+                if (num1 < num2)
+                {
+                    commands["bool"]= 1;
+                }
+
+            }
+            else if(bin_to_dec(condition) == 3){
+                if (num1 == num2)
+                {
+                    commands["bool"]= 1;
+                }
+
+            }
+            else if(bin_to_dec(condition) == 4){
+                if (num1 == 0)
+                {
+                    commands["bool"]= 1;
+                }
+            }
+            if(commands["bool"]= 1){
+
+                file>>inst;
+                if(file.eof())
+                    break;
+
+        }
+        }
+        else if (opcode == "1010")//put
+        {
+            string reg = inst.substr(4, 3);
+            string num = inst.substr(8, 5);
+
+            int val = bin_to_dec(num);
+            commands[reg] = val;
         }
         else if (opcode == "1010")//put
         {
@@ -130,10 +189,12 @@ int main() {
          //   std::cout << " " << it->first << ":" << it->second <<endl;
 
         //cout<<endl;
+        }
+    return EXIT_SUCCESS;
     }
-}
-int bin_to_dec(string bin)
-{
+
+
+int bin_to_dec(string bin){
     int num = 0;
     for (int i = 0; i < bin.length(); i++)
         if (bin[i] == '1')
