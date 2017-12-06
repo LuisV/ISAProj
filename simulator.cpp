@@ -41,7 +41,7 @@ int main() {
         file>>inst;
         if(file.eof())
             break;
-       // cout<<inst<<endl;
+        //cout<<inst<<endl;
 
         string opcode = inst.substr(0, 4);
         op = stoi(opcode);
@@ -106,16 +106,16 @@ int main() {
         }
         else if (opcode == "1000")//jump
         {
-            if(commands["bool"]== 1) {
+
                 string num = inst.substr(4);
                 file.clear();
                 GotoLine(file, commands[num]);
-            }
+
         }
         else if (opcode == "1001")//cond
         {
-            string n1 = inst.substr(4,4);
-            string n2 = inst.substr(8,4);
+            double num1 = commands[inst.substr(8,4)];
+            double num2 = commands[inst.substr(12,4)];
             //commands["bool"]= commands[n1] != commands[n2];
 
             //four entries: opcode condition num1 num2
@@ -124,9 +124,9 @@ int main() {
             //conditions: 2-> if num1 < num2
             //conditions: 4-> if num1 == 0 (one parameter)
 
-            string condition = inst.substr(4,3);
-            int num1= stoi(n1);
-            int num2=stoi(n2);
+            string condition = inst.substr(4,4);
+           // cout<<"C:"<<condition<<" "<<bin_to_dec(condition)<<" ";
+
             commands["bool"]= 0;
 
             if(bin_to_dec(condition) == 1)
@@ -157,12 +157,14 @@ int main() {
                     commands["bool"]= 1;
                 }
             }
-            if(commands["bool"] == 1){
+            if(commands["bool"]== 1){
 
                 file>>inst;
+                //cout<<"taken"<<inst;
                 if(file.eof())
                     break;
-        }
+
+            }
         }
 
         else if (opcode == "1010")//put
@@ -177,13 +179,13 @@ int main() {
             commands[inst.substr(4,4)]= bin_to_dec( inst.substr(8) );
         }
         //inst="";
-       // for ( auto it = commands.begin(); it != commands.end(); ++it )
-         //   std::cout << " " << it->first << ":" << it->second <<endl;
+        // for ( auto it = commands.begin(); it != commands.end(); ++it )
+        //   std::cout << " " << it->first << ":" << it->second <<endl;
 
         //cout<<endl;
-        }
-    return EXIT_SUCCESS;
     }
+    return EXIT_SUCCESS;
+}
 
 
 int bin_to_dec(string bin){
