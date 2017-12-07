@@ -43,7 +43,9 @@ put: 1010 - “Places integer value into register” ** this function can take a
 
 var: 1011 - "Creates a variable"
 
-array: 1100  #check if correct- "Creats an array"
+# Update
+
+array: 1100 - "Creats an array"
 
 ### Using the Program
 
@@ -75,4 +77,5 @@ put    (variable)  (dec value)
 
 var    (variable name) (dec value) 
 
+# Update
 array  ()
