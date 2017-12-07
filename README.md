@@ -5,7 +5,7 @@
 
 R0 - R7
 
-### Instructions with opcodes
+## Instructions with opcodes
 
 disp: 0000 - “Display the contents of an address” 
 
@@ -45,9 +45,9 @@ var: 1011 - "Creates a variable"
 
 ## Update
 
-array: 1100 - "Creats an array"
+array:    - "Creats an array"
 
-### Using the Program
+## Using the Program
 
 Declaration of variables must be defined at start of program
 
