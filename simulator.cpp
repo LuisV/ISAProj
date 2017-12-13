@@ -1,17 +1,13 @@
 //
 // Created by Luis on 11/30/2017.
 //
-
-//
-// Created by Luis on 11/30/2017.
-//
-
 #include<iostream>
 #include <unordered_map>
 #include<fstream>
 #include <cstdlib>
 #include <cmath>
 #include <string>
+#include <vector>
 #include <limits>
 
 using namespace std;
@@ -20,14 +16,20 @@ int bin_to_dec(string bin);
 ifstream& GotoLine(ifstream& file, unsigned int num);
 
 int main() {
+
+
     ifstream file;
     string inst;
     int op;
     file.open("myFile.chkn");
 
+
+    std::unordered_map <std:: string, std::vector<int>> arrMap;
+
     unordered_map<string, int> commands;
 
-    commands["0000"] = 0;
+    int* c0= nullptr;
+    //commands["0000"] = 0;
     commands["0001"] = 0;
     commands["0010"] = 0;
     commands["0011"] = 0;
@@ -42,26 +44,45 @@ int main() {
         if(file.eof())
             break;
         //cout<<inst<<endl;
+        string reg;
 
         string opcode = inst.substr(0, 4);
         op = stoi(opcode);
 
         if(opcode == "0000")//display -- ME
         {
-            string reg = inst.substr(4,4);
-            cout << commands[reg] << endl;
+            reg = inst.substr(4,4);
+            if(reg=="0000")
+                cout<<*c0<<endl;
+            else
+                cout << commands[reg] << endl;
         }
         else if (opcode =="0001")//input -- ME
         {
             int in =0;
+            reg=inst.substr(4,4);
             cin >> in;
-            commands[inst.substr(4,4)] = in;
+            if(reg=="0000")
+                *c0=in;
+            else
+                commands[reg] = in;
         }
         else if (opcode == "0010")//move
         {
+
             string num1 = inst.substr(4,4);
+
             string num2 = inst.substr(8,4);
-            commands[num2]=commands[num1];
+
+            if(num1=="0000"&& num2!="0000")
+                *c0=commands[num2];
+            else if (num1!="0000" && num2=="0000")
+                commands[num1]= *c0;
+            else
+                commands[num2]=commands[num1];
+
+
+
         }
         else if(opcode == "0011") // add
         {
@@ -114,8 +135,19 @@ int main() {
         }
         else if (opcode == "1001")//cond
         {
-            double num1 = commands[inst.substr(8,4)];
-            double num2 = commands[inst.substr(12,4)];
+            double num1, num2;
+            string n1 = inst.substr(8,4);
+            string n2 = inst.substr(12,4);
+
+            if(n1=="0000")
+                num1=*c0;
+            else
+                num1 = commands[n1];
+
+            if(n2=="0000")
+                num2=*c0;
+            else
+                num2 = commands[n2];
             //commands["bool"]= commands[n1] != commands[n2];
 
             //four entries: opcode condition num1 num2
@@ -169,14 +201,37 @@ int main() {
 
         else if (opcode == "1010")//put
         {
-            string reg = inst.substr (4, 4);
+            reg = inst.substr (4, 4);
             string num = inst.substr (8);
             int val = bin_to_dec(num);
-            commands[reg] = val;
+
+            if(reg=="0000")
+                *c0=val;
+            else
+                commands[reg] = val;
         }
         else if (opcode == "1011")//var
         {
             commands[inst.substr(4,4)]= bin_to_dec( inst.substr(8) );
+        }
+
+        else if( opcode == "1100")//arr
+        {
+            std::vector<int> temp;
+            temp.resize(bin_to_dec(inst.substr(8)));
+          //  fill(temp.begin(),temp.end(),0);
+            arrMap[inst.substr(4,4)]= temp;
+          //  for ( auto it = arrMap[inst.substr(4,4)].begin(); it != arrMap[inst.substr(4,4)].end(); ++it )
+            //    std::cout << "!" << *it;
+            cout<<endl;
+        }
+        else if( opcode == "1101")//at
+        {
+
+
+            c0= &arrMap[inst.substr(4,4)].at(commands[inst.substr(8,4)]);
+
+            cout<<endl;
         }
         //inst="";
         // for ( auto it = commands.begin(); it != commands.end(); ++it )

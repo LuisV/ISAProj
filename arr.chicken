@@ -1,0 +1,21 @@
+arr arr1 5
+var size 5
+var one 1
+var zero 0
+var label 8
+var num 7
+var index 0
+at arr1 index
+move i num
+add num num one
+add index index one
+cond 3 index size 
+jump label
+put label 17
+put index 0
+input num
+at arr1 index
+add index index one
+cond 3 num i
+jump label
+disp one
