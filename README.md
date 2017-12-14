@@ -69,7 +69,7 @@ jump   (line number in a variable)
 
 cond   (1 or 2 or 3) (num1) (num2)
 
-cond   (4) num
+cond   (4) (num)
 
 put    (variable)  (dec value)
 
