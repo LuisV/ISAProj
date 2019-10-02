@@ -1,7 +1,7 @@
 # ChickenScratch :chicken: :balloon:
 16 bit code: 4 bit opCode, 4 bit addressing, Parameters: 3 possible
 
-![picture alt](https://www.sciencedaily.com/images/2017/05/170502204556_1_900x600.jpg "The Chicken")
+![picture alt](https://www.thespruce.com/thmb/REHCMZpetkTU1B4bGra-xkbRrTg=/2599x1922/filters:no_upscale():max_bytes(150000):strip_icc()/WELP_CHICK-57f187a63df78c690ffdee17.jpg "The Chicken")
  
 ### Registers
 
